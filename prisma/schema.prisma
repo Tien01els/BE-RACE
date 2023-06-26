@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Race {
+  id Int @id @default(autoincrement())
+  grandPrix String
+  date String
+  winner String
+  car String
+  laps String
+  time String
+  informationRace InformationRace[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InformationRace {
+  id Int @id @default(autoincrement())
+  pos String
+  no String
+  driver String
+  car String
+  laps String
+  time String
+  pts String
+  race Race @relation(fields: [raceId], references: [id])
+  raceId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Driver {
+  id Int @id @default(autoincrement())
+  pos String
+  driver String
+  nationality String
+  car String
+  pts String
+  informationDriver InformationDriver[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InformationDriver {
+  id Int @id @default(autoincrement())
+  grandPrix String
+  date String
+  car String
+  racePosition String
+  pts String
+  driver Driver @relation(fields: [driverId], references: [id])
+  driverId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id Int @id @default(autoincrement())
+  pos String
+  team String
+  pts String
+  informationTeam InformationTeam[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InformationTeam {
+  id Int @id @default(autoincrement())
+  grandPrix String
+  date String
+  pts String
+  team Team @relation(fields: [teamId], references: [id])
+  teamId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model FastestLap {
+  id Int @id @default(autoincrement())
+  grandPrix String
+  driver String
+  car String
+  time String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
