@@ -11,13 +11,14 @@ datasource db {
 }
 
 model Race {
-  id Int @id @default(autoincrement())
+  id String @id
   grandPrix String
   date String
   winner String
   car String
   laps String
   time String
+  year String
   informationRace InformationRace[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -32,19 +33,21 @@ model InformationRace {
   laps String
   time String
   pts String
+  year String
   race Race @relation(fields: [raceId], references: [id])
-  raceId Int
+  raceId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Driver {
-  id Int @id @default(autoincrement())
+  id String @id
   pos String
   driver String
   nationality String
   car String
   pts String
+  year String
   informationDriver InformationDriver[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -57,17 +60,19 @@ model InformationDriver {
   car String
   racePosition String
   pts String
+  year String
   driver Driver @relation(fields: [driverId], references: [id])
-  driverId Int
+  driverId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Team {
-  id Int @id @default(autoincrement())
+  id String @id
   pos String
   team String
   pts String
+  year String
   informationTeam InformationTeam[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -78,8 +83,9 @@ model InformationTeam {
   grandPrix String
   date String
   pts String
+  year String
   team Team @relation(fields: [teamId], references: [id])
-  teamId Int
+  teamId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -91,6 +97,7 @@ model FastestLap {
   driver String
   car String
   time String
+  year String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
