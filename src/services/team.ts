@@ -5,6 +5,38 @@ import crawling from '../utils/crawling'
 const prisma: PrismaClient = new PrismaClient();
 
 export default {
+    getRankingTeam: async (year: string, team: string) => {
+        try {
+            console.log('Service: Get ranking of team!');
+            let response = await prisma.team.findMany({
+                where: {
+                    year: year
+                }
+            });
+            if (!response.length) {
+                const crawlingTeam = await crawling(year, "team")
+                if (crawlingTeam)
+                    for (let i = 0; i < crawlingTeam.length; ++i) {
+                        response.push(await prisma.team.create({
+                            data: {
+                                id: `${crawlingTeam[i].id}-${year}`,
+                                pos: crawlingTeam[i].pos,
+                                team: crawlingTeam[i].team,
+                                pts: crawlingTeam[i].pts,
+                                year: year
+                            }
+                        }))
+                    }
+                response = response.filter(res => res.team.includes(team));
+            }
+            else
+                response = response.filter(res => res.team.includes(team));
+            return helper.responseData(200, response.sort((res1, res2) => Number.parseInt(res1.pos) - Number.parseInt(res2.pos)))
+        } catch (error: any) {
+            console.error(error.message)
+            return helper.errorData(404, "Ranking of team not found")
+        }
+    },
     getAllTeams: async (year: string) => {
         try {
             console.log('Service: Get all teams!');

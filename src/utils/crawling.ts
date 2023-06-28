@@ -51,8 +51,6 @@ export default async (year: string, apiType: string, key?: string) => {
     const formulaURL = `https://www.formula1.com/en/results.html/${year}${apiType && '/' + apiType || ""}${key && '/' + key || ""}.html`
     const response = await axios.get(`${proxyURL}${formulaURL}`);
     const $ = cheerio.load(response.data);
-    console.log(formulaURL)
-
     let arrayKeys: string[] = [];
     if (apiType === 'races' && !key) {
         arrayKeys = ["grandPrix", "date", "winner", "car", "laps", "time"]
