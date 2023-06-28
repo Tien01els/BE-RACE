@@ -8,7 +8,7 @@ const handleValueForType = ($: cheerio.CheerioAPI, keysOfType: string[], apiType
         .map((_, element) => {
             return $(element).find('tr').map((_, elementTr) => {
                 let idOfElementTr: string = "";
-                const allRaces = $(elementTr).find("td:not(.limiter)").map((_, elementTd) => {
+                const arrayValues = $(elementTr).find("td:not(.limiter)").map((_, elementTd) => {
                     if ($(elementTd).children().length) {
                         if ($(elementTd).find('a').length) {
                             const href = $(elementTd).find('a').attr('href');
@@ -36,11 +36,11 @@ const handleValueForType = ($: cheerio.CheerioAPI, keysOfType: string[], apiType
                 }).get()
                 if (idOfElementTr) {
                     if (!keysOfType.includes("id")) keysOfType.unshift("id")
-                    allRaces.unshift(idOfElementTr);
+                    arrayValues.unshift(idOfElementTr);
                 }
                 let result: any = {};
-                for (let i = 0; i < allRaces.length; ++i)
-                    result[keysOfType[i]] = allRaces[i];
+                for (let i = 0; i < arrayValues.length; ++i)
+                    result[keysOfType[i]] = arrayValues[i];
                 return result;
             }).get()
         }).get();
@@ -51,6 +51,8 @@ export default async (year: string, apiType: string, key?: string) => {
     const formulaURL = `https://www.formula1.com/en/results.html/${year}${apiType && '/' + apiType || ""}${key && '/' + key || ""}.html`
     const response = await axios.get(`${proxyURL}${formulaURL}`);
     const $ = cheerio.load(response.data);
+    console.log(formulaURL)
+
     let arrayKeys: string[] = [];
     if (apiType === 'races' && !key) {
         arrayKeys = ["grandPrix", "date", "winner", "car", "laps", "time"]
@@ -64,6 +66,8 @@ export default async (year: string, apiType: string, key?: string) => {
         arrayKeys = ["pos", "team", "pts"]
     } else if (apiType === 'team' && key) {
         arrayKeys = ["grandPrix", "date", "pts"]
+    } else if (apiType === 'fastest-laps') {
+        arrayKeys = ["grandPrix", "driver", "car", "time"]
     }
     return handleValueForType($, arrayKeys, apiType)
 }

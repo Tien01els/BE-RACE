@@ -65,7 +65,8 @@ export default {
             }
             return helper.responseData(200, response)
         } catch (error: any) {
-            return helper.errorData(500, error.message)
+            console.error(error.message)
+            return helper.errorData(404, "Information of race not found")
         }
     },
 }
