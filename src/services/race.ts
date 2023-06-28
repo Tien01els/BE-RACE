@@ -5,7 +5,7 @@ import crawling from '../utils/crawling'
 const prisma: PrismaClient = new PrismaClient();
 
 export default {
-    getAllRace: async (year: string) => {
+    getAllRaces: async (year: string) => {
         try {
             console.log('Service: Get all races!');
             const response = await prisma.race.findMany({
@@ -19,7 +19,7 @@ export default {
                     for (let i = 0; i < crawlingRace.length; ++i) {
                         response.push(await prisma.race.create({
                             data: {
-                                id: crawlingRace[i].id,
+                                id: `${crawlingRace[i].id}-${year}`,
                                 grandPrix: crawlingRace[i].grandPrix,
                                 date: crawlingRace[i].date,
                                 winner: crawlingRace[i].winner,
@@ -36,16 +36,16 @@ export default {
             return helper.errorData(500, error.message)
         }
     },
-    getInformationRace: async (year: string, key: string) => {
+    getInformationRace: async (raceId: string) => {
         try {
             console.log('Service: Get information of race!');
             const response = await prisma.informationRace.findMany({
                 where: {
-                    year: year,
-                    raceId: key
+                    raceId: raceId
                 }
             });
             if (!response.length) {
+                const [key, year] = raceId.split("-");
                 const crawlingRace = await crawling(year, "races", key)
                 if (crawlingRace)
                     for (let i = 0; i < crawlingRace.length; ++i) {
@@ -58,8 +58,7 @@ export default {
                                 laps: crawlingRace[i].laps,
                                 time: crawlingRace[i].time,
                                 pts: crawlingRace[i].pts,
-                                raceId: key,
-                                year: year
+                                raceId: raceId,
                             }
                         }))
                     }

@@ -5,7 +5,7 @@ import crawling from '../utils/crawling'
 const prisma: PrismaClient = new PrismaClient();
 
 export default {
-    getAllDriver: async (year: string) => {
+    getAllDrivers: async (year: string) => {
         try {
             console.log('Service: Get all drivers!');
             const response = await prisma.driver.findMany({
@@ -19,7 +19,7 @@ export default {
                     for (let i = 0; i < crawlingDriver.length; ++i) {
                         response.push(await prisma.driver.create({
                             data: {
-                                id: crawlingDriver[i].id,
+                                id: `${crawlingDriver[i].id}-${year}`,
                                 pos: crawlingDriver[i].pos,
                                 driver: crawlingDriver[i].driver,
                                 nationality: crawlingDriver[i].nationality,
@@ -35,16 +35,16 @@ export default {
             return helper.errorData(500, error.message)
         }
     },
-    getInformationDriver: async (year: string, key: string) => {
+    getInformationDriver: async (driverId: string) => {
         try {
             console.log('Service: Get information of driver!');
             const response = await prisma.informationDriver.findMany({
                 where: {
-                    year: year,
-                    driverId: key
+                    driverId: driverId
                 }
             });
             if (!response.length) {
+                const [key, year] = driverId.split("-");
                 const crawlingDriver = await crawling(year, "drivers", key)
                 if (crawlingDriver)
                     for (let i = 0; i < crawlingDriver.length; ++i) {
@@ -55,8 +55,7 @@ export default {
                                 car: crawlingDriver[i].car,
                                 racePosition: crawlingDriver[i].racePosition,
                                 pts: crawlingDriver[i].pts,
-                                driverId: key,
-                                year: year
+                                driverId: driverId,
                             }
                         }))
                     }

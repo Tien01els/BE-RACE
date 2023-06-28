@@ -1,6 +1,5 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { IRace } from "../../interface";
 
 const handleValueForType = ($: cheerio.CheerioAPI, keysOfType: string[], apiType: string) => {
     return $(`.resultsarchive-table`)
@@ -18,6 +17,8 @@ const handleValueForType = ($: cheerio.CheerioAPI, keysOfType: string[], apiType
                                     idOfElementTr = href.split("/").slice(-3, -1).join("/")
                                 if (apiType === 'drivers' && !href.includes("team"))
                                     idOfElementTr = href.split("/").slice(-2).join("/").replace(".html", "")
+                                if (apiType === 'team')
+                                    idOfElementTr = href.split("/").slice(-1).join("/").replace(".html", "")
                             }
                             return $(elementTd).find('a').text().replace(/\s+/g, ' ').trim()
                         } else {
@@ -59,6 +60,10 @@ export default async (year: string, apiType: string, key?: string) => {
         arrayKeys = ["pos", "driver", "nationality", "car", "pts"]
     } else if (apiType === 'drivers' && key) {
         arrayKeys = ["grandPrix", "date", "car", "racePosition", "pts"]
+    } else if (apiType === 'team' && !key) {
+        arrayKeys = ["pos", "team", "pts"]
+    } else if (apiType === 'team' && key) {
+        arrayKeys = ["grandPrix", "date", "pts"]
     }
     return handleValueForType($, arrayKeys, apiType)
 }

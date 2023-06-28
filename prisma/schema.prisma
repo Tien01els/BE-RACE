@@ -33,7 +33,6 @@ model InformationRace {
   laps String
   time String
   pts String
-  year String
   race Race @relation(fields: [raceId], references: [id])
   raceId String
   createdAt DateTime @default(now())
@@ -60,7 +59,6 @@ model InformationDriver {
   car String
   racePosition String
   pts String
-  year String
   driver Driver @relation(fields: [driverId], references: [id])
   driverId String
   createdAt DateTime @default(now())
@@ -83,7 +81,6 @@ model InformationTeam {
   grandPrix String
   date String
   pts String
-  year String
   team Team @relation(fields: [teamId], references: [id])
   teamId String
   createdAt DateTime @default(now())
