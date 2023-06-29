@@ -34,7 +34,7 @@ export default {
             return helper.responseData(200, response.sort((res1, res2) => Number.parseInt(res1.pos) - Number.parseInt(res2.pos)))
         } catch (error: any) {
             console.error(error.message)
-            return helper.errorData(404, "Ranking of team not found")
+            return helper.errorData(500, error.message)
         }
     },
     getAllTeams: async (year: string) => {
