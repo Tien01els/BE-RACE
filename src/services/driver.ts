@@ -10,10 +10,7 @@ export default {
             console.log('Service: Get ranking of driver!');
             let response = await prisma.driver.findMany({
                 where: {
-                    year: year,
-                    driver: {
-                        contains: driver
-                    }
+                    year: year
                 }
             });
             if (!response.length) {
@@ -39,7 +36,7 @@ export default {
             return helper.responseData(200, response.sort((res1, res2) => Number.parseInt(res1.pos) - Number.parseInt(res2.pos)))
         } catch (error: any) {
             console.error(error.message)
-            return helper.errorData(404, "Ranking of driver not found")
+            return helper.errorData(500, error.message)
         }
     },
     getAllDrivers: async (year: string) => {
