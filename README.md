@@ -355,7 +355,7 @@ Success: Status code 200
     ...
 ]
 ```
-Failed: Status code 500
+Failed: Status code 404
 ```
 {
   message: string
